@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.hilt)
+    kotlin("kapt")
 }
 
 android {
@@ -66,4 +68,30 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Coroutines
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+    testImplementation(libs.coroutines.test)
+
+    // Coroutine Lifecycle Scopes
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // Dagger - Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation)
+
+    // Retrofit/okhttp3
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.converter.gson)
+    implementation(libs.okhttp3)
+    implementation(libs.okhttp3.logging)
+
+    // Mockk
+    implementation(libs.io.mockk.mockk)
 }
