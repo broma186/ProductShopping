@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ProductShopping</string>
+    <string name="toolbar_name">Products</string>
 </resources>
