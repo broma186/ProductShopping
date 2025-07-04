@@ -15,7 +15,7 @@ fun AppNavHost(navController: NavHostController) {
             route = Screen.Products.route
         ) {
             composable("products") {
-                ProductsScreen()
+               // ProductsScreen()
             }
         }
     }
