@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.broma186.productshopping.data.model.Product
+import com.broma186.productshopping.presentation.model.Product
 import com.broma186.productshopping.presentation.ProductIconHelper
 
 @Composable

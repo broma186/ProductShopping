@@ -2,6 +2,9 @@ package com.broma186.productshopping.data.di
 
 import android.content.Context
 import com.broma186.productshopping.data.api.ProductService
+import com.broma186.productshopping.data.repository.ProductShoppingRepositoryImpl
+import com.broma186.productshopping.domain.repository.ProductShoppingRepository
+import com.broma186.productshopping.domain.usecase.GetProductsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,5 +48,17 @@ class AppModule {
             .client(okHttpClient)
             .build()
             .create(ProductService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProductShoppingRepository(productService: ProductService): ProductShoppingRepository {
+        return ProductShoppingRepositoryImpl(productService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserInfoUseCase(userInfoRepository: ProductShoppingRepository): GetProductsUseCase {
+        return GetProductsUseCase(userInfoRepository)
     }
 }

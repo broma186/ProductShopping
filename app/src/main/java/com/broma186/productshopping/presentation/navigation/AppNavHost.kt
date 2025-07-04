@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.broma186.productshopping.presentation.screens.ProductsScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -14,7 +15,7 @@ fun AppNavHost(navController: NavHostController) {
             route = Screen.Products.route
         ) {
             composable("products") {
-               // ProductsScreen()
+                ProductsScreen()
             }
         }
     }

@@ -15,21 +15,34 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.broma186.productshopping.R
-import com.broma186.productshopping.data.model.Product
+import com.broma186.productshopping.presentation.model.Product
 import com.broma186.productshopping.presentation.components.ProductItem
+import com.broma186.productshopping.presentation.viewmodel.ProductsViewModel
+
+@Composable
+fun ProductsScreen() {
+    val viewModel: ProductsViewModel = hiltViewModel()
+    LaunchedEffect(Unit) {
+        viewModel.onIntent(ProductsViewModel.ProductIntent.FetchProducts)
+    }
+    ProductsScreenContent(products = viewModel.uiState.collectAsState().value.products)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductsScreen(products: List<Product>) {
+fun ProductsScreenContent(products: List<Product>) {
     Scaffold(
         Modifier
-        .fillMaxSize()
-        .background(Color.Green),
+            .fillMaxSize()
+            .background(Color.Green),
         topBar = {
             TopAppBar(title = { Text(text = stringResource(id = R.string.toolbar_name)) })
         }) { innerPadding ->
