@@ -21,33 +21,27 @@ class ProductsViewModel @Inject constructor(
 
     fun onIntent(intent: ProductsIntent) {
         when (intent) {
-            ProductsIntent.FetchProducts -> fetchData()
-            ProductsIntent.RefreshProducts -> refreshData()
+            ProductsIntent.FetchProducts -> fetchData(false)
+            ProductsIntent.RefreshProducts -> fetchData(true)
         }
     }
 
-    private fun fetchData() {
+    private fun fetchData(isRefresh: Boolean = false) {
         viewModelScope.launch {
             try {
-                _uiState.value = ProductsState(isLoading = true)
+                _uiState.value = ProductsState(isLoading = !isRefresh, isRefreshing = isRefresh, error = null)
                 val productList = getProductsUseCase.invoke().map { it.mapToUI() }.filter {
                     it.available && it.inventory > 0
                 }
                 if (productList.isNotEmpty()) {
-                    _uiState.value = ProductsState(products = productList)
+                    _uiState.value = ProductsState(products = productList, isLoading = false, isRefreshing = false)
                 } else {
-                    _uiState.value = ProductsState(error = "No content to display")
+                    _uiState.value = ProductsState(error = "No content to display", isLoading = false, isRefreshing = false)
                 }
             } catch (exception: Exception) {
-                _uiState.value = ProductsState(error = exception.cause?.message)
+                _uiState.value = ProductsState(error = exception.cause?.message, isLoading = false, isRefreshing = false)
             }
         }
-    }
-
-    private fun refreshData() {
-        _uiState.value = _uiState.value.copy(isRefreshing = true)
-        fetchData()
-        _uiState.value = _uiState.value.copy(isRefreshing = false)
     }
 
     sealed class ProductsIntent {

@@ -1,5 +1,6 @@
 package com.broma186.productshopping.presentation.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -50,7 +51,10 @@ fun ProductDetailsScreenContent(
                 }
             ) { innerPadding ->
                 ProductItem(
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = Modifier.padding(
+                        horizontal = 16.dp,
+                        vertical = innerPadding.calculateTopPadding()
+                    ),
                     name = uiState.product.name,
                     icon = uiState.product.icon,
                     imageSize = 300.dp,

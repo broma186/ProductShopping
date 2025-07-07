@@ -2,7 +2,7 @@ package com.broma186.productshopping.presentation.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,12 +11,14 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,11 +38,10 @@ fun ProductsScreen(
     LaunchedEffect(Unit) {
         viewModel.onIntent(ProductsViewModel.ProductsIntent.FetchProducts)
     }
+    val uiState = viewModel.uiState.collectAsState()
     ProductsScreenContent(
         navController = navController,
-        uiState = viewModel.uiState.collectAsState().value,
-        products = viewModel.uiState.collectAsState().value.products,
-        isRefreshing = viewModel.uiState.collectAsState().value.isRefreshing,
+        uiState = uiState.value,
         onRefresh = {
             viewModel.onIntent(ProductsViewModel.ProductsIntent.RefreshProducts)
         }
@@ -51,17 +52,15 @@ fun ProductsScreen(
 fun ProductsScreenContent(
     navController: NavController,
     uiState: ProductsViewModel.ProductsState,
-    products: List<Product>,
-    isRefreshing: Boolean,
     onRefresh: () -> Unit
 ) {
     when {
-        uiState.isLoading || uiState.isRefreshing -> {
+        uiState.isLoading -> {
             LoadingScreen()
         }
 
         uiState.products.isNotEmpty() -> {
-            SuccessScreen(navController, products, isRefreshing, onRefresh)
+            SuccessScreen(navController, uiState.products, uiState.isRefreshing, onRefresh)
         }
 
         !uiState.error.isNullOrEmpty() -> {
@@ -86,7 +85,7 @@ fun SuccessScreen(
         topBar = {
             AppBar(title = stringResource(id = R.string.toolbar_name))
         }) { innerPadding ->
-        Column(Modifier.padding(innerPadding)) {
+        Box(Modifier.padding(innerPadding)) {
             val gridState = rememberLazyGridState()
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -101,8 +100,7 @@ fun SuccessScreen(
                 items(products) { product ->
                     ProductItem(Modifier.clickable(
                         onClick = {
-                            navController.navigate("productDetail/${product.id}") {
-                                launchSingleTop = true
+                                navController.navigate("productDetail/${product.id}") {
                             }
                         }
                     ),
@@ -112,6 +110,11 @@ fun SuccessScreen(
                     )
                 }
             }
+            PullRefreshIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                refreshing = isRefreshing,
+                state = state
+            )
         }
     }
 }
