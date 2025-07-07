@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.broma186.productshopping.R
 import com.broma186.productshopping.presentation.components.AppBar
 import com.broma186.productshopping.presentation.components.ProductItem
@@ -30,38 +29,54 @@ import com.broma186.productshopping.presentation.model.Product
 import com.broma186.productshopping.presentation.viewmodel.ProductsViewModel
 
 @Composable
-fun ProductsScreen() {
+fun ProductsScreen(
+    navController: NavController
+) {
     val viewModel: ProductsViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
-        viewModel.onIntent(ProductsViewModel.ProductIntent.FetchProducts)
-    }
-    val navController = rememberNavController()
-    LaunchedEffect(Unit) {
-        viewModel.backEvent.collect {
-            navController.popBackStack()
-        }
+        viewModel.onIntent(ProductsViewModel.ProductsIntent.FetchProducts)
     }
     ProductsScreenContent(
+        navController = navController,
+        uiState = viewModel.uiState.collectAsState().value,
         products = viewModel.uiState.collectAsState().value.products,
         isRefreshing = viewModel.uiState.collectAsState().value.isRefreshing,
-        navController = navController,
         onRefresh = {
-            viewModel.onIntent(ProductsViewModel.ProductIntent.RefreshProducts)
-        },
-        onBack = {
-            viewModel.onIntent(ProductsViewModel.ProductIntent.GoBack)
+            viewModel.onIntent(ProductsViewModel.ProductsIntent.RefreshProducts)
         }
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductsScreenContent(
+    navController: NavController,
+    uiState: ProductsViewModel.ProductsState,
     products: List<Product>,
     isRefreshing: Boolean,
+    onRefresh: () -> Unit
+) {
+    when {
+        uiState.isLoading || uiState.isRefreshing -> {
+            LoadingScreen()
+        }
+
+        uiState.products.isNotEmpty() -> {
+            SuccessScreen(navController, products, isRefreshing, onRefresh)
+        }
+
+        !uiState.error.isNullOrEmpty() -> {
+            ErrorScreen(Modifier, uiState.error)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SuccessScreen(
     navController: NavController,
-    onRefresh: () -> Unit,
-    onBack: () -> Unit
+    products: List<Product>,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit
 ) {
     val state = rememberPullRefreshState(isRefreshing, onRefresh)
     Scaffold(
@@ -86,11 +101,18 @@ fun ProductsScreenContent(
                 items(products) { product ->
                     ProductItem(Modifier.clickable(
                         onClick = {
-                            // TODO: Navigate to product details screen.
+                            navController.navigate("productDetail/${product.id}") {
+                                launchSingleTop = true
+                            }
                         }
-                    ), product)
+                    ),
+                        name = product.name,
+                        icon = product.icon,
+                        price = product.price
+                    )
                 }
             }
         }
     }
 }
+

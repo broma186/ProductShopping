@@ -1,9 +1,13 @@
 package com.broma186.productshopping.data.di
 
 import android.content.Context
+import androidx.room.Room
 import com.broma186.productshopping.data.api.ProductService
+import com.broma186.productshopping.data.db.ProductDao
+import com.broma186.productshopping.data.db.ProductDatabase
 import com.broma186.productshopping.data.repository.ProductShoppingRepositoryImpl
 import com.broma186.productshopping.domain.repository.ProductShoppingRepository
+import com.broma186.productshopping.domain.usecase.GetProductUseCase
 import com.broma186.productshopping.domain.usecase.GetProductsUseCase
 import dagger.Module
 import dagger.Provides
@@ -52,13 +56,30 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideProductShoppingRepository(productService: ProductService): ProductShoppingRepository {
-        return ProductShoppingRepositoryImpl(productService)
+    fun provideProductShoppingDatabase(@ApplicationContext context: Context): ProductDatabase {
+        return Room.databaseBuilder(context, ProductDatabase::class.java, "product_db").build()
+    }
+
+    @Provides
+    fun provideProductShoppingDao(db: ProductDatabase): ProductDao {
+        return db.productDao()
     }
 
     @Provides
     @Singleton
-    fun provideGetUserInfoUseCase(userInfoRepository: ProductShoppingRepository): GetProductsUseCase {
-        return GetProductsUseCase(userInfoRepository)
+    fun provideProductShoppingRepository(productShoppingDao: ProductDao, productService: ProductService): ProductShoppingRepository {
+        return ProductShoppingRepositoryImpl(productShoppingDao, productService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetProductsUseCase(productShoppingRepository: ProductShoppingRepository): GetProductsUseCase {
+        return GetProductsUseCase(productShoppingRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetProductUseCase(productShoppingRepository: ProductShoppingRepository): GetProductUseCase {
+        return GetProductUseCase(productShoppingRepository)
     }
 }

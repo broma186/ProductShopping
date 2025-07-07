@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ProductShopping</string>
     <string name="toolbar_name">Products</string>
+    <string name="content_desc_error">Error</string>
 </resources>

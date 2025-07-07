@@ -1,0 +1,53 @@
+package com.broma186.productshopping.presentation.viewmodel
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.broma186.productshopping.data.model.mapToUI
+import com.broma186.productshopping.domain.usecase.GetProductUseCase
+import com.broma186.productshopping.presentation.model.Product
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ProductDetailsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val getProductUseCase: GetProductUseCase
+) : ViewModel() {
+
+    private val productId: Int = checkNotNull(savedStateHandle["productId"])
+
+    private val _uiState = MutableStateFlow(ProductState())
+    val uiState: StateFlow<ProductState> = _uiState
+
+    fun onIntent(intent: ProductIntent) {
+        when (intent) {
+            ProductIntent.FetchProduct -> fetchProduct()
+        }
+    }
+
+    private fun fetchProduct() {
+        viewModelScope.launch {
+            try {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+                val product = getProductUseCase.invoke(id = productId).mapToUI()
+                _uiState.value = _uiState.value.copy(product = product, isLoading = false, errorMessage = null)
+            } catch (exception: Exception) {
+               _uiState.value = _uiState.value.copy(errorMessage = exception.cause?.message, isLoading = false)
+            }
+        }
+    }
+
+    sealed class ProductIntent {
+        data object FetchProduct : ProductIntent()
+    }
+
+    data class ProductState(
+        val isLoading: Boolean = false,
+        val product: Product? = null,
+        val errorMessage: String? = null
+    )
+}

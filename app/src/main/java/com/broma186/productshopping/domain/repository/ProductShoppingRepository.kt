@@ -1,7 +1,8 @@
 package com.broma186.productshopping.domain.repository
 
-import com.broma186.productshopping.data.model.ProductsResponse
+import com.broma186.productshopping.data.model.ProductData
 
 interface ProductShoppingRepository {
-    suspend fun getProducts(): ProductsResponse
+    suspend fun getProducts(): List<ProductData>
+    suspend fun getProduct(id: Int): ProductData
 }

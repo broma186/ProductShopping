@@ -26,6 +26,5 @@ fun AppBar(
                     )
                 }
             }
-        },
-        actions = { onBackClick?.invoke() })
+        })
 }

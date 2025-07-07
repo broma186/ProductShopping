@@ -7,6 +7,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 activityCompose = "1.8.2"
 navigationCompose = "2.4.1"
+room = "2.6.1"
 composeBom = "2024.04.01"
 hilt = "2.48"
 hiltNav = "1.1.0"
@@ -16,6 +17,7 @@ okhttp3 = "4.11.0"
 retrofit2 = "2.9.0"
 mockk = "1.13.5"
 material = "1.5.3"
+javapoet = "1.13.0"
 compose = "1.6.1"
 
 [libraries]
@@ -47,7 +49,11 @@ retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref =
 retrofit2-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit2" }
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 okhttp3-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp3" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 io-mockk-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

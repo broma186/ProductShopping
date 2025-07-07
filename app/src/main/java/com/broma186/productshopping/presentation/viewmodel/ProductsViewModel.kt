@@ -6,9 +6,7 @@ import com.broma186.productshopping.data.model.mapToUI
 import com.broma186.productshopping.presentation.model.Product
 import com.broma186.productshopping.domain.usecase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,14 +19,10 @@ class ProductsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProductsState())
     val uiState: StateFlow<ProductsState> = _uiState
 
-    private val _backEvent = MutableSharedFlow<ProductIntent>()
-    val backEvent: SharedFlow<ProductIntent> = _backEvent
-
-    fun onIntent(intent: ProductIntent) {
+    fun onIntent(intent: ProductsIntent) {
         when (intent) {
-            ProductIntent.FetchProducts -> fetchData()
-            ProductIntent.RefreshProducts -> refreshData()
-            ProductIntent.GoBack -> goBack()
+            ProductsIntent.FetchProducts -> fetchData()
+            ProductsIntent.RefreshProducts -> refreshData()
         }
     }
 
@@ -36,7 +30,7 @@ class ProductsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _uiState.value = ProductsState(isLoading = true)
-                val productList = getProductsUseCase.invoke().mapToUI().filter {
+                val productList = getProductsUseCase.invoke().map { it.mapToUI() }.filter {
                     it.available && it.inventory > 0
                 }
                 if (productList.isNotEmpty()) {
@@ -56,16 +50,9 @@ class ProductsViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isRefreshing = false)
     }
 
-    private fun goBack() {
-        viewModelScope.launch {
-            _backEvent.emit(ProductIntent.GoBack)
-        }
-    }
-
-    sealed class ProductIntent {
-        data object FetchProducts : ProductIntent()
-        data object RefreshProducts : ProductIntent()
-        data object GoBack : ProductIntent()
+    sealed class ProductsIntent {
+        data object FetchProducts : ProductsIntent()
+        data object RefreshProducts : ProductsIntent()
     }
 
     data class ProductsState(

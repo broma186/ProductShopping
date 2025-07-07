@@ -1,5 +1,6 @@
 package com.broma186.productshopping.presentation.navigation
 
 sealed class Screen(val route: String) {
-    object Products : Screen("productCollection")
+    data object Products : Screen("productsHome")
+    data object ProductDetail : Screen("productDetail/{productId}")
 }
