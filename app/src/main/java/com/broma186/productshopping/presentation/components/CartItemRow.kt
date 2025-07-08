@@ -44,8 +44,7 @@ fun CartItemRow(
     icon: String,
     inventory: Int,
     cartCount: Int,
-    onCountChange: (productId: Int, cartCount: Int) -> Unit,
-    onDeleteConfirmed: () -> Unit
+    onCountChange: (cartCount: Int) -> Unit
 ) {
     val count = remember { mutableIntStateOf(cartCount) }
     var showConfirmDialog by remember { mutableStateOf(false) }
@@ -63,7 +62,7 @@ fun CartItemRow(
                 TextButton(
                     onClick = {
                         showConfirmDialog = false
-                        onDeleteConfirmed()
+                        onCountChange(0) // deletes from shopping list
                     }
                 ) {
                     Text("OK")
@@ -124,7 +123,7 @@ fun CartItemRow(
                     onClick = {
                         if (count.intValue > 0) {
                             count.intValue--
-                            onCountChange(count.intValue, id)
+                            onCountChange(count.intValue)
                         }
                     },
                     enabled = count.intValue > 0
@@ -147,7 +146,7 @@ fun CartItemRow(
                     onClick = {
                         if (count.intValue < inventory) {
                             count.intValue++
-                            onCountChange(count.intValue, id)
+                            onCountChange(count.intValue)
                         }
                     },
                     enabled = count.intValue < inventory

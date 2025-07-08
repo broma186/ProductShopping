@@ -24,7 +24,7 @@ fun AppNavHost(navController: NavHostController) {
             ProductDetailsScreen(navController, productId, navController::popBackStack)
         }
         composable(Screen.ShoppingCart.route) {
-            ShoppingCartScreen()
+            ShoppingCartScreen(navController::popBackStack)
         }
     }
 }
