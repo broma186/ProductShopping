@@ -34,3 +34,21 @@ fun ProductData.mapToUI(): Product {
             cartCount = cartCount ?: 0
         )
 }
+
+fun ProductData.mapToEntity(cartCount: Int = 0): ProductEntity {
+    return ProductEntity(
+        id = id,
+        name = name,
+        icon = icon,
+        price = price,
+        currency = currency,
+        description = description,
+        category = category,
+        available = available,
+        inventory = inventory,
+        rating = rating,
+        reviews = reviews,
+        unit = unit,
+        cartCount = cartCount
+    )
+}

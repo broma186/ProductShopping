@@ -5,6 +5,7 @@ import com.broma186.productshopping.data.db.ProductDao
 import com.broma186.productshopping.data.db.toDomainModel
 import com.broma186.productshopping.data.model.ProductData
 import com.broma186.productshopping.data.model.mapToEntity
+import com.broma186.productshopping.data.model.mapToUI
 import com.broma186.productshopping.domain.repository.ProductShoppingRepository
 import javax.inject.Inject
 
@@ -15,7 +16,13 @@ class ProductShoppingRepositoryImpl @Inject constructor(
 
     override suspend fun getProducts(): List<ProductData> {
         val response = productService.getProducts()
-        productDao.insertProducts(response.mapToEntity())
+        val daoProductsById = productDao.getAllProducts().associateBy { it.id }
+        val mergedProducts = response.products.map { productData ->
+            val existing = daoProductsById[productData.id]
+            val cartCount = existing?.cartCount ?: 0
+            productData.mapToEntity(cartCount)
+        }
+        productDao.insertProducts(mergedProducts)
         return productDao.getAllProducts().map { it.toDomainModel() }
     }
 

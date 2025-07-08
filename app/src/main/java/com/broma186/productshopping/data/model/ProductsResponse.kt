@@ -20,7 +20,8 @@ fun ProductsResponse.mapToEntity(): List<ProductEntity> {
             inventory = it.inventory,
             rating = it.rating,
             reviews = it.reviews,
-            unit = it.unit
+            unit = it.unit,
+            cartCount = it.cartCount
         )
     }
 }
