@@ -17,8 +17,8 @@ import com.broma186.productshopping.R
 fun AppBar(
     title: String,
     onBackClick: (() -> Unit)? = null,
-    shoppingCartActionIcon: Boolean = true
-    ) {
+    onShoppingCartClick: (() -> Unit)? = null
+) {
     TopAppBar(
         title = { Text(title) },
         navigationIcon = {
@@ -32,10 +32,10 @@ fun AppBar(
             }
         },
         actions = {
-            if (shoppingCartActionIcon) {
+            onShoppingCartClick?.let {
                 IconButton(
                     onClick = {
-                        // TODO: Open shopping cart screen.
+                        onShoppingCartClick.invoke()
                     }) {
                     Icon(
                         painter = painterResource(id = R.drawable.shopping_cart_24),

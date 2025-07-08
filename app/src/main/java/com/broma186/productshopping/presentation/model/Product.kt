@@ -5,8 +5,11 @@ data class Product(
     val name: String,
     val icon: String,
     val price: String,
+    val doublePrice: Double,
+    val currency: String,
     val description: String,
     val available: Boolean,
-    val inventory: Int
+    val inventory: Int,
+    val cartCount: Int
 )
 

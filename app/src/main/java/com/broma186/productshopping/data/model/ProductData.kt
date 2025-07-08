@@ -1,6 +1,7 @@
 package com.broma186.productshopping.data.model
 
 import com.broma186.productshopping.PriceFormatter
+import com.broma186.productshopping.data.db.ProductEntity
 import com.broma186.productshopping.presentation.model.Product
 
 data class ProductData(
@@ -15,7 +16,8 @@ data class ProductData(
     val inventory: Int,
     val rating: Double,
     val reviews: Int,
-    val unit: String
+    val unit: String,
+    val cartCount: Int? = null
 )
 
 fun ProductData.mapToUI(): Product {
@@ -24,9 +26,11 @@ fun ProductData.mapToUI(): Product {
             name = name,
             icon = icon,
             price = PriceFormatter.formatPrice(price, currency),
+            doublePrice = price,
+            currency = currency,
             description = description,
             available = available,
-            inventory = inventory
+            inventory = inventory,
+            cartCount = cartCount ?: 0
         )
-
 }

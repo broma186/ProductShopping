@@ -12,9 +12,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,6 +31,8 @@ import com.broma186.productshopping.R
 import com.broma186.productshopping.presentation.components.AppBar
 import com.broma186.productshopping.presentation.components.ProductItem
 import com.broma186.productshopping.presentation.model.Product
+import com.broma186.productshopping.presentation.model.ProductsState
+import com.broma186.productshopping.presentation.navigation.Screen
 import com.broma186.productshopping.presentation.viewmodel.ProductsViewModel
 
 @Composable
@@ -48,23 +53,35 @@ fun ProductsScreen(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductsScreenContent(
     navController: NavController,
-    uiState: ProductsViewModel.ProductsState,
+    uiState: ProductsState,
     onRefresh: () -> Unit
 ) {
-    when {
-        uiState.isLoading -> {
-            LoadingScreen()
-        }
+    val state = rememberPullRefreshState(uiState.isRefreshing, onRefresh)
+    Scaffold(
+        Modifier
+            .fillMaxSize()
+            .pullRefresh(state),
+        topBar = {
+            AppBar(title = stringResource(id = R.string.toolbar_name)) {
+                navController.navigate(Screen.ShoppingCart.route)
+            }
+        }) { innerPadding ->
+        when {
+            uiState.isLoading -> {
+                LoadingScreen()
+            }
 
-        uiState.products.isNotEmpty() -> {
-            SuccessScreen(navController, uiState.products, uiState.isRefreshing, onRefresh)
-        }
+            uiState.products.isNotEmpty() -> {
+                SuccessScreen(Modifier.padding(innerPadding), state, navController, uiState.products, uiState.isRefreshing)
+            }
 
-        !uiState.error.isNullOrEmpty() -> {
-            ErrorScreen(Modifier, uiState.error)
+            !uiState.error.isNullOrEmpty() -> {
+                ErrorScreen(Modifier, uiState.error)
+            }
         }
     }
 }
@@ -72,20 +89,13 @@ fun ProductsScreenContent(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SuccessScreen(
+    modifier: Modifier,
+    state: PullRefreshState,
     navController: NavController,
     products: List<Product>,
-    isRefreshing: Boolean,
-    onRefresh: () -> Unit
+    isRefreshing: Boolean
 ) {
-    val state = rememberPullRefreshState(isRefreshing, onRefresh)
-    Scaffold(
-        Modifier
-            .fillMaxSize()
-            .pullRefresh(state),
-        topBar = {
-            AppBar(title = stringResource(id = R.string.toolbar_name))
-        }) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
+        Box(modifier) {
             val gridState = rememberLazyGridState()
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -116,6 +126,5 @@ fun SuccessScreen(
                 state = state
             )
         }
-    }
 }
 

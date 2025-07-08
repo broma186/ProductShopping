@@ -3,8 +3,8 @@ package com.broma186.productshopping.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broma186.productshopping.data.model.mapToUI
-import com.broma186.productshopping.presentation.model.Product
 import com.broma186.productshopping.domain.usecase.GetProductsUseCase
+import com.broma186.productshopping.presentation.model.ProductsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,11 +48,4 @@ class ProductsViewModel @Inject constructor(
         data object FetchProducts : ProductsIntent()
         data object RefreshProducts : ProductsIntent()
     }
-
-    data class ProductsState(
-        val isLoading: Boolean = false,
-        val isRefreshing: Boolean = false,
-        val products: List<Product> = emptyList(),
-        val error: String? = null
-    )
 }

@@ -19,6 +19,13 @@ class ProductShoppingRepositoryImpl @Inject constructor(
         return productDao.getAllProducts().map { it.toDomainModel() }
     }
 
+    override suspend fun getProductsLocal(): List<ProductData> {
+        val daoProducts = productDao.getAllProducts()
+        return daoProducts.map {
+            it.toDomainModel()
+        }
+    }
+
     override suspend fun getProduct(id: Int): ProductData {
         return productDao.getProduct(id).toDomainModel()
     }

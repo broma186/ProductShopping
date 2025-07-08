@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ProductShopping</string>
     <string name="toolbar_name">Products</string>
+    <string name="shopping_cart_title">Shopping Cart</string>
     <string name="content_desc_error">Error</string>
     <string name="update_cart_result_success">Successfully added product to cart</string>
     <string name="update_cart_result_failure">Failed to add product to cart</string>

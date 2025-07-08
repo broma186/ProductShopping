@@ -9,6 +9,7 @@ import com.broma186.productshopping.data.repository.ProductShoppingRepositoryImp
 import com.broma186.productshopping.domain.repository.ProductShoppingRepository
 import com.broma186.productshopping.domain.usecase.GetCartCountUseCase
 import com.broma186.productshopping.domain.usecase.GetProductUseCase
+import com.broma186.productshopping.domain.usecase.GetProductsLocalUseCase
 import com.broma186.productshopping.domain.usecase.GetProductsUseCase
 import com.broma186.productshopping.domain.usecase.UpdateCartUseCase
 import dagger.Module
@@ -77,6 +78,12 @@ class AppModule {
     @Singleton
     fun provideGetProductsUseCase(productShoppingRepository: ProductShoppingRepository): GetProductsUseCase {
         return GetProductsUseCase(productShoppingRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetProductsLocalUseCase(productShoppingRepository: ProductShoppingRepository): GetProductsLocalUseCase {
+        return GetProductsLocalUseCase(productShoppingRepository)
     }
 
     @Provides

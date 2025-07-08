@@ -31,14 +31,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.broma186.productshopping.R
 import com.broma186.productshopping.presentation.components.AppBar
 import com.broma186.productshopping.presentation.components.ProductItem
+import com.broma186.productshopping.presentation.navigation.Screen
 import com.broma186.productshopping.presentation.viewmodel.ProductDetailsViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProductDetailsScreen(
+    navController: NavController,
     productId: Int,
     onBackClick: () -> Unit
 ) {
@@ -48,6 +51,7 @@ fun ProductDetailsScreen(
     }
     val uiState by viewModel.uiState.collectAsState()
     ProductDetailsScreenContent(
+        navController,
         uiState,
         viewModel::onAddToCart,
         onBackClick
@@ -56,29 +60,33 @@ fun ProductDetailsScreen(
 
 @Composable
 fun ProductDetailsScreenContent(
+    navController: NavController,
     uiState: ProductDetailsViewModel.ProductState,
     onAddToCart: suspend (cartCount: Int) -> Boolean,
     onBackClick: () -> Unit
 ) {
-    when {
-        uiState.isLoading -> {
-            LoadingScreen()
+    val product = uiState.product
+    Scaffold(
+        Modifier
+            .fillMaxSize(),
+        topBar = {
+            AppBar(title = product?.name ?: "", onBackClick) {
+                navController.navigate(Screen.ShoppingCart.route)
+            }
         }
-
-        uiState.product != null && !uiState.isLoading -> {
-            val product = uiState.product
-            Scaffold(
-                Modifier
-                    .fillMaxSize(),
-                topBar = {
-                    AppBar(title = product.name, onBackClick)
+    ) { innerPadding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            when {
+                uiState.isLoading -> {
+                    LoadingScreen()
                 }
-            ) { innerPadding ->
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                ) {
+
+                uiState.product != null && !uiState.isLoading -> {
+
                     val count = remember { mutableIntStateOf(uiState.cartCount ?: 0) }
 
                     LaunchedEffect(uiState.cartCount) {
@@ -93,7 +101,7 @@ fun ProductDetailsScreenContent(
                             modifier = Modifier.padding(
                                 horizontal = 16.dp
                             ),
-                            name = product.name,
+                            name = product!!.name,
                             icon = product.icon,
                             imageSize = 300.dp,
                             price = product.price,
@@ -151,27 +159,31 @@ fun ProductDetailsScreenContent(
                         onClick = {
                             coroutineScope.launch {
                                 val success = onAddToCart(count.intValue)
-                                val message = if (success) context.getText(R.string.update_cart_result_success) else context.getText(R.string.update_cart_result_failure)
+                                val message =
+                                    if (success) context.getText(R.string.update_cart_result_success) else context.getText(
+                                        R.string.update_cart_result_failure
+                                    )
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                             }
                         },
-                        enabled = product.inventory > 0 && count.intValue > 0,
+                        enabled = product!!.inventory > 0 && count.intValue > 0,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
                     ) {
                         Text("Add to Cart")
                     }
+
+                }
+
+                !uiState.errorMessage.isNullOrEmpty() -> {
+                    ErrorScreen(errorMessage = uiState.errorMessage)
+                }
+
+                else -> {
+                    ErrorScreen(errorMessage = "Failed to load product")
                 }
             }
-        }
-
-        !uiState.errorMessage.isNullOrEmpty() -> {
-            ErrorScreen(errorMessage = uiState.errorMessage)
-        }
-
-        else -> {
-            ErrorScreen(errorMessage = "Failed to load product")
         }
     }
 }

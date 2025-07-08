@@ -18,9 +18,6 @@ interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProducts(products: List<ProductEntity>)
 
-/*    @Query("UPDATE products SET cartCount = :cartCount WHERE id = :productId")
-    suspend fun updateProduct(productId: Int, cartCount: Int): Int*/
-
     @Update
     suspend fun updateProduct(product: ProductEntity): Int
 

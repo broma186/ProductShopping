@@ -34,6 +34,7 @@ fun ProductEntity.toDomainModel(): ProductData {
             inventory = inventory,
             rating = rating,
             reviews = reviews,
-            unit = unit
+            unit = unit,
+            cartCount = cartCount
         )
 }

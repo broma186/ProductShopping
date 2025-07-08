@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.broma186.productshopping.presentation.screens.ProductDetailsScreen
 import com.broma186.productshopping.presentation.screens.ProductsScreen
+import com.broma186.productshopping.presentation.screens.ShoppingCartScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -20,7 +21,10 @@ fun AppNavHost(navController: NavHostController) {
             arguments = listOf(navArgument("productId") { type = NavType.IntType })
         ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getInt("productId") ?: 0
-            ProductDetailsScreen(productId, navController::popBackStack)
+            ProductDetailsScreen(navController, productId, navController::popBackStack)
+        }
+        composable(Screen.ShoppingCart.route) {
+            ShoppingCartScreen()
         }
     }
 }

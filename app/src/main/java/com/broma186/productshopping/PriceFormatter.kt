@@ -15,4 +15,8 @@ object PriceFormatter {
         format.currency = currency
         return format.format(price)
     }
+
+    fun totalPrice(currency: String, price: Double, cartCount: Int): String {
+        return "Total: $currency ${"%.2f".format(price * cartCount)}"
+    }
 }
