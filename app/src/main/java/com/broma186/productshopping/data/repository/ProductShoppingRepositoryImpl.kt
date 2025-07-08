@@ -22,4 +22,15 @@ class ProductShoppingRepositoryImpl @Inject constructor(
     override suspend fun getProduct(id: Int): ProductData {
         return productDao.getProduct(id).toDomainModel()
     }
+
+    override suspend fun updateCart(productId: Int, cartCount: Int): Boolean {
+        val product = productDao.getProduct(productId)
+        val updatedProduct = product.copy(cartCount = cartCount)
+        val updatedRows = productDao.updateProduct(updatedProduct)
+        return updatedRows > 0
+    }
+
+    override suspend fun getCartCount(productId: Int): Int {
+        return productDao.getCartCount(productId) ?: 0
+    }
 }

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface ProductDao {
@@ -16,4 +17,13 @@ interface ProductDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProducts(products: List<ProductEntity>)
+
+/*    @Query("UPDATE products SET cartCount = :cartCount WHERE id = :productId")
+    suspend fun updateProduct(productId: Int, cartCount: Int): Int*/
+
+    @Update
+    suspend fun updateProduct(product: ProductEntity): Int
+
+    @Query("SELECT cartCount FROM products WHERE id = :productId")
+    suspend fun getCartCount(productId: Int): Int?
 }

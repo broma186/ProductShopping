@@ -1,7 +1,7 @@
 package com.broma186.productshopping.presentation.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -19,14 +18,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +35,7 @@ import com.broma186.productshopping.R
 import com.broma186.productshopping.presentation.components.AppBar
 import com.broma186.productshopping.presentation.components.ProductItem
 import com.broma186.productshopping.presentation.viewmodel.ProductDetailsViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProductDetailsScreen(
@@ -48,6 +49,7 @@ fun ProductDetailsScreen(
     val uiState by viewModel.uiState.collectAsState()
     ProductDetailsScreenContent(
         uiState,
+        viewModel::onAddToCart,
         onBackClick
     )
 }
@@ -55,6 +57,7 @@ fun ProductDetailsScreen(
 @Composable
 fun ProductDetailsScreenContent(
     uiState: ProductDetailsViewModel.ProductState,
+    onAddToCart: suspend (cartCount: Int) -> Boolean,
     onBackClick: () -> Unit
 ) {
     when {
@@ -76,7 +79,11 @@ fun ProductDetailsScreenContent(
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
-                    val count = remember { mutableIntStateOf(0) }
+                    val count = remember { mutableIntStateOf(uiState.cartCount ?: 0) }
+
+                    LaunchedEffect(uiState.cartCount) {
+                        count.intValue = uiState.cartCount ?: 0
+                    }
                     Column(
                         modifier = Modifier
                             .weight(1f)
@@ -138,9 +145,15 @@ fun ProductDetailsScreenContent(
                             }
                         }
                     }
+                    val coroutineScope = rememberCoroutineScope()
+                    val context = LocalContext.current
                     Button(
                         onClick = {
-                            // onAddToCart(count)
+                            coroutineScope.launch {
+                                val success = onAddToCart(count.intValue)
+                                val message = if (success) context.getText(R.string.update_cart_result_success) else context.getText(R.string.update_cart_result_failure)
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            }
                         },
                         enabled = product.inventory > 0 && count.intValue > 0,
                         modifier = Modifier
@@ -159,59 +172,6 @@ fun ProductDetailsScreenContent(
 
         else -> {
             ErrorScreen(errorMessage = "Failed to load product")
-        }
-    }
-}
-
-@Composable
-fun QuantitySelector(
-    modifier: Modifier,
-    count: MutableIntState,
-    inventory: Int
-) {
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            IconButton(
-                onClick = {
-                    if (count.intValue > 0) {
-                        count.intValue--
-                    }
-                },
-                enabled = count.intValue > 0
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.minus_24),
-                    contentDescription = "Decrement",
-                    tint = if (count.intValue > 0) Color.Blue else Color.LightGray
-                )
-            }
-            Text(
-                text = "$count",
-                fontSize = 20.sp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            IconButton(
-                onClick = {
-                    if (count.intValue < inventory) {
-                        count.intValue++
-                    }
-                },
-                enabled = count.intValue < inventory
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Increment",
-                    tint = if (count.intValue < inventory) Color.Blue else Color.LightGray
-                )
-            }
         }
     }
 }

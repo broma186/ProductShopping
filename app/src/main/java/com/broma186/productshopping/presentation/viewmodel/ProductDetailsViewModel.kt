@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broma186.productshopping.data.model.mapToUI
+import com.broma186.productshopping.domain.usecase.GetCartCountUseCase
 import com.broma186.productshopping.domain.usecase.GetProductUseCase
+import com.broma186.productshopping.domain.usecase.UpdateCartUseCase
 import com.broma186.productshopping.presentation.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getProductUseCase: GetProductUseCase
+    private val getProductUseCase: GetProductUseCase,
+    private val updateCartUseCase: UpdateCartUseCase,
+    private val getCartCountUseCase: GetCartCountUseCase
 ) : ViewModel() {
 
     private val productId: Int = checkNotNull(savedStateHandle["productId"])
@@ -34,11 +38,24 @@ class ProductDetailsViewModel @Inject constructor(
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true)
                 val product = getProductUseCase.invoke(id = productId).mapToUI()
-                _uiState.value = _uiState.value.copy(product = product, isLoading = false, errorMessage = null)
+                val cartCount = getCartCountUseCase.invoke(id = productId)
+                _uiState.value = _uiState.value.copy(product = product, cartCount = cartCount, isLoading = false, errorMessage = null)
             } catch (exception: Exception) {
                _uiState.value = _uiState.value.copy(errorMessage = exception.cause?.message, isLoading = false)
             }
         }
+    }
+
+    suspend fun onAddToCart(cartCount: Int): Boolean {
+          return try {
+                if (updateCartUseCase.invoke(productId, cartCount)) {
+                    return true
+                }
+              false
+            } catch (exception: Exception) {
+              false
+            }
+
     }
 
     sealed class ProductIntent {
@@ -48,6 +65,7 @@ class ProductDetailsViewModel @Inject constructor(
     data class ProductState(
         val isLoading: Boolean = false,
         val product: Product? = null,
+        val cartCount: Int? = null,
         val errorMessage: String? = null
     )
 }

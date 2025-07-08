@@ -17,7 +17,8 @@ data class ProductEntity(
     val inventory: Int,
     val rating: Double,
     val reviews: Int,
-    val unit: String
+    val unit: String,
+    val cartCount: Int? = null
 )
 
 fun ProductEntity.toDomainModel(): ProductData {

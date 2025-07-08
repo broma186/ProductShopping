@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1f86fe46cb0c584bab266e5532e4109d",
+    "identityHash": "2a5edb4d4e068c14329bf8ea2dc30074",
     "entities": [
       {
         "tableName": "products",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `price` REAL NOT NULL, `currency` TEXT NOT NULL, `description` TEXT NOT NULL, `icon` TEXT NOT NULL, `category` TEXT NOT NULL, `available` INTEGER NOT NULL, `inventory` INTEGER NOT NULL, `rating` REAL NOT NULL, `reviews` INTEGER NOT NULL, `unit` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `price` REAL NOT NULL, `currency` TEXT NOT NULL, `description` TEXT NOT NULL, `icon` TEXT NOT NULL, `category` TEXT NOT NULL, `available` INTEGER NOT NULL, `inventory` INTEGER NOT NULL, `rating` REAL NOT NULL, `reviews` INTEGER NOT NULL, `unit` TEXT NOT NULL, `cartCount` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -79,6 +79,12 @@
             "columnName": "unit",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "cartCount",
+            "columnName": "cartCount",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -94,7 +100,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1f86fe46cb0c584bab266e5532e4109d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2a5edb4d4e068c14329bf8ea2dc30074')"
     ]
   }
 }
