@@ -7,6 +7,7 @@ import com.broma186.productshopping.data.db.ProductDao
 import com.broma186.productshopping.data.db.ProductDatabase
 import com.broma186.productshopping.data.repository.ProductShoppingRepositoryImpl
 import com.broma186.productshopping.domain.repository.ProductShoppingRepository
+import com.broma186.productshopping.domain.usecase.ClearCartUseCase
 import com.broma186.productshopping.domain.usecase.GetCartCountUseCase
 import com.broma186.productshopping.domain.usecase.GetProductUseCase
 import com.broma186.productshopping.domain.usecase.GetProductsLocalUseCase
@@ -102,5 +103,11 @@ class AppModule {
     @Singleton
     fun provideGetCartCountUseCase(productShoppingRepository: ProductShoppingRepository): GetCartCountUseCase {
         return GetCartCountUseCase(productShoppingRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideClearCartUseCase(productShoppingRepository: ProductShoppingRepository): ClearCartUseCase {
+        return ClearCartUseCase(productShoppingRepository)
     }
 }

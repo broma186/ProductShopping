@@ -104,8 +104,7 @@ fun CartItemRow(
                     maxLines = 1,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-
-                    )
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 

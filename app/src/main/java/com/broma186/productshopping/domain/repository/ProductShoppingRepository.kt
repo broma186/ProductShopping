@@ -8,4 +8,5 @@ interface ProductShoppingRepository {
     suspend fun getProduct(id: Int): ProductData
     suspend fun updateCart(productId: Int, cartCount: Int): Boolean
     suspend fun getCartCount(productId: Int): Int
+    suspend fun clearCart(): Boolean
 }

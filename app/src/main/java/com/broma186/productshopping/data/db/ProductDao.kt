@@ -23,4 +23,7 @@ interface ProductDao {
 
     @Query("SELECT cartCount FROM products WHERE id = :productId")
     suspend fun getCartCount(productId: Int): Int?
+
+    @Query("UPDATE products SET cartCount = 0")
+    suspend fun clearCart(): Int
 }

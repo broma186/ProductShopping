@@ -3,6 +3,7 @@ package com.broma186.productshopping.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broma186.productshopping.data.model.mapToUI
+import com.broma186.productshopping.domain.usecase.ClearCartUseCase
 import com.broma186.productshopping.domain.usecase.GetProductsLocalUseCase
 import com.broma186.productshopping.domain.usecase.UpdateCartUseCase
 import com.broma186.productshopping.presentation.model.ProductsState
@@ -16,8 +17,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ShoppingCartViewModel @Inject constructor(
     private val getProductsLocalUseCase: GetProductsLocalUseCase,
-    private val updateCartUseCase: UpdateCartUseCase
-    ) : ViewModel() {
+    private val updateCartUseCase: UpdateCartUseCase,
+    private val clearCartUseCase: ClearCartUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductsState())
     val uiState: StateFlow<ProductsState> = _uiState
@@ -52,15 +54,18 @@ class ShoppingCartViewModel @Inject constructor(
     }
 
     suspend fun updateCart(productId: Int, cartCount: Int): Boolean {
-        _uiState.value = _uiState.value.copy(products = uiState.value.products.map {
-            if (it.id == productId) {
-                it.copy(cartCount = cartCount)
-            } else {
-                it.copy(cartCount = it.cartCount)
-            }
-        })
         return try {
             if (updateCartUseCase.invoke(productId, cartCount)) {
+                val updatedProducts = _uiState.value.products
+                    .map { product ->
+                        if (product.id == productId) product.copy(cartCount = cartCount) else product
+                    }
+                    .filter { it.cartCount > 0 }
+
+                _uiState.value = _uiState.value.copy(
+                    products = updatedProducts,
+                    error = if (updatedProducts.isEmpty()) "No content to display" else null
+                )
                 return true
             }
             false
@@ -68,4 +73,13 @@ class ShoppingCartViewModel @Inject constructor(
             false
         }
     }
+
+    fun clearCart() {
+        viewModelScope.launch {
+            if (clearCartUseCase.invoke()) {
+                fetchData()
+            }
+        }
+    }
+
 }

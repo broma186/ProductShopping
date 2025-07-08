@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.broma186.productshopping.PriceFormatter
 import com.broma186.productshopping.R
 import com.broma186.productshopping.presentation.components.AppBar
@@ -66,7 +65,8 @@ fun ShoppingCartScreen(
                         bottom = innerPadding.calculateBottomPadding()
                     ),
                     uiState.products,
-                    viewModel::updateCart
+                    viewModel::updateCart,
+                    viewModel::clearCart
                 )
             }
 
@@ -81,7 +81,8 @@ fun ShoppingCartScreen(
 fun ShoppingCartScreenContent(
     modifier: Modifier,
     products: List<Product>,
-    updateCart: suspend (productId: Int, cartCount: Int) -> Boolean
+    updateCart: suspend (productId: Int, cartCount: Int) -> Boolean,
+    clearCart: () -> Unit
 ) {
     val state = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -144,7 +145,7 @@ fun ShoppingCartScreenContent(
             }
             Button(
                 onClick = {
-                    // TODO: clear all of cart
+                    clearCart.invoke()
                 }
             ) {
                 Text("Clear Cart")

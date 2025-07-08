@@ -46,4 +46,8 @@ class ProductShoppingRepositoryImpl @Inject constructor(
     override suspend fun getCartCount(productId: Int): Int {
         return productDao.getCartCount(productId) ?: 0
     }
+
+    override suspend fun clearCart(): Boolean {
+        return productDao.clearCart() > 0
+    }
 }
