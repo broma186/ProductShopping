@@ -1,10 +1,12 @@
 package com.broma186.productshopping.presentation.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,7 +44,7 @@ fun CartItemRow(
     icon: String,
     inventory: Int,
     cartCount: Int,
-    onQuantityChange: (Int) -> Unit,
+    onCountChange: (productId: Int, cartCount: Int) -> Unit,
     onDeleteConfirmed: () -> Unit
 ) {
     val count = remember { mutableIntStateOf(cartCount) }
@@ -55,12 +57,8 @@ fun CartItemRow(
     if (showConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
-            title = {
-                Text("Remove Item")
-            },
-            text = {
-                Text("Are you sure you want to delete ${name}?")
-            },
+            title = { Text("Remove Item") },
+            text = { Text("Are you sure you want to delete $name?") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -83,7 +81,7 @@ fun CartItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         Image(
             painter = painterResource(id = ProductIconHelper.fromId(icon).iconRes),
@@ -93,77 +91,87 @@ fun CartItemRow(
                 .clip(RoundedCornerShape(8.dp))
         )
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp),
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = name,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
-            Text(
-                text = totalPrice,
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
-        }
+            Column {
+                Text(
+                    text = name,
+                    maxLines = 1,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
 
-        Spacer(modifier = Modifier.width(8.dp))
+                    )
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = {
-                    if (count.intValue > 0) {
-                        count.intValue--
-                        onQuantityChange(count.intValue)
-                    }
-                },
-                enabled = count.intValue > 0
-            ) {
-                Icon(
-                    modifier = Modifier.size(32.dp),
-                    painter = painterResource(id = R.drawable.minus_24),
-                    contentDescription = "Decrement",
-                    tint = if (count.intValue > 0) Color.Blue else Color.LightGray
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = totalPrice,
+                    fontSize = 14.sp,
+                    color = Color.Gray
                 )
             }
 
-            Text(
-                text = "${count.intValue}",
-                fontSize = 32.sp,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            IconButton(
-                onClick = {
-                    if (count.intValue < inventory) {
-                        count.intValue++
-                        onQuantityChange(count.intValue)
-                    }
-                },
-                enabled = count.intValue < inventory
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    modifier = Modifier.size(32.dp),
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Increment",
-                    tint = if (count.intValue < inventory) Color.Blue else Color.LightGray
+                IconButton(
+                    onClick = {
+                        if (count.intValue > 0) {
+                            count.intValue--
+                            onCountChange(count.intValue, id)
+                        }
+                    },
+                    enabled = count.intValue > 0
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(id = R.drawable.minus_24),
+                        contentDescription = "Decrement",
+                        tint = if (count.intValue > 0) Color.Blue else Color.LightGray
+                    )
+                }
+
+                Text(
+                    text = "${count.intValue}",
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
+
+                IconButton(
+                    onClick = {
+                        if (count.intValue < inventory) {
+                            count.intValue++
+                            onCountChange(count.intValue, id)
+                        }
+                    },
+                    enabled = count.intValue < inventory
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Increment",
+                        tint = if (count.intValue < inventory) Color.Blue else Color.LightGray
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                IconButton(
+                    onClick = { showConfirmDialog = true }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete item",
+                        tint = Color.Red
+                    )
+                }
             }
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-        IconButton(
-            onClick = { showConfirmDialog = true }
-        ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete item",
-                tint = Color.Red
-            )
         }
     }
 }

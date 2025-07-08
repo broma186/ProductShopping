@@ -55,7 +55,6 @@ class ProductDetailsViewModel @Inject constructor(
             } catch (exception: Exception) {
               false
             }
-
     }
 
     sealed class ProductIntent {

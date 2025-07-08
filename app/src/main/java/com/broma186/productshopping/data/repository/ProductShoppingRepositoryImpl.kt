@@ -5,7 +5,6 @@ import com.broma186.productshopping.data.db.ProductDao
 import com.broma186.productshopping.data.db.toDomainModel
 import com.broma186.productshopping.data.model.ProductData
 import com.broma186.productshopping.data.model.mapToEntity
-import com.broma186.productshopping.data.model.mapToUI
 import com.broma186.productshopping.domain.repository.ProductShoppingRepository
 import javax.inject.Inject
 

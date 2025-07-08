@@ -3,13 +3,16 @@ package com.broma186.productshopping.presentation.screens
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.broma186.productshopping.PriceFormatter
@@ -20,6 +23,7 @@ import com.broma186.productshopping.presentation.model.Product
 import com.broma186.productshopping.presentation.model.ProductsState
 import com.broma186.productshopping.presentation.viewmodel.ProductsViewModel
 import com.broma186.productshopping.presentation.viewmodel.ShoppingCartViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ShoppingCartScreen() {
@@ -42,7 +46,9 @@ fun ShoppingCartScreenContent(
         }
 
         uiState.products.isNotEmpty() -> {
-            SuccessScreen(uiState.products)
+            SuccessScreen(uiState.products) {
+
+            }
         }
 
         !uiState.error.isNullOrEmpty() -> {
@@ -53,7 +59,8 @@ fun ShoppingCartScreenContent(
 
 @Composable
 fun SuccessScreen(
-    products: List<Product>
+    products: List<Product>,
+    onCountChange: suspend (productId: Int, cartCount: Int) -> Boolean,
 ) {
     Scaffold(
         Modifier
@@ -61,26 +68,37 @@ fun SuccessScreen(
         topBar = {
             AppBar(title = stringResource(id = R.string.shopping_cart_title))
         }) { innerPadding ->
-            val state = rememberLazyListState()
-            LazyColumn(
-                modifier = Modifier.padding(innerPadding),
-                state = state) {
-                items(products) {
-                    CartItemRow(
-                        name = it.name,
-                        totalPrice = PriceFormatter.totalPrice(it.currency, it.doublePrice, it.cartCount),
-                        icon = it.icon,
-                        inventory = it.inventory,
-                        cartCount = it.cartCount,
-                        onQuantityChange = {
-
-                        },
-                        onDeleteConfirmed = {
-
-                        }
-                    )
+        val state = rememberLazyListState()
+        val coroutineScope = rememberCoroutineScope()
+        LazyColumn(
+            modifier = Modifier.padding(innerPadding),
+            state = state
+        ) {
+            itemsIndexed(products) { index, product ->
+                if (index != 0) {
+                    HorizontalDivider(color = Color.LightGray)
                 }
+                CartItemRow(
+                    name = product.name,
+                    totalPrice = PriceFormatter.totalPrice(
+                        product.currency,
+                        product.doublePrice,
+                        product.cartCount
+                    ),
+                    icon = product.icon,
+                    inventory = product.inventory,
+                    cartCount = product.cartCount,
+                    onCountChange = { id, count ->
+                        coroutineScope.launch {
+                            onCountChange.invoke(id, count)
+                        }
+                    },
+                    onDeleteConfirmed = {
+                        //resetCount()
+                    }
+                )
             }
+        }
 
     }
 }
