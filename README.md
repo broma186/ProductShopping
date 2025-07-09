@@ -1,6 +1,6 @@
-Product Shopping App
+  Product Shopping App
 
-- Used MVI, but actions and intents aren't fully integrated to make it complelety MVI.
+- MVI architecture, but actions and intents aren't fully integrated to make it complelety MVI.
   The AddToCart and update/clear cart methods weren't included in the ProductsIntent.
   - Room necessary for local persistence and offline viewing.
   - If there was a full REST service I'd have made the data refreshable for the shopping cart.
