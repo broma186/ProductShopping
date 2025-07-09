@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broma186.productshopping.data.model.mapToUI
 import com.broma186.productshopping.domain.usecase.GetProductsUseCase
+import com.broma186.productshopping.presentation.model.ErrorState
 import com.broma186.productshopping.presentation.model.ProductsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,10 +37,10 @@ class ProductsViewModel @Inject constructor(
                 if (productList.isNotEmpty()) {
                     _uiState.value = ProductsState(products = productList, isLoading = false, isRefreshing = false)
                 } else {
-                    _uiState.value = ProductsState(error = "No content to display", isLoading = false, isRefreshing = false)
+                    _uiState.value = ProductsState(error = ErrorState.NoData, isLoading = false, isRefreshing = false)
                 }
             } catch (exception: Exception) {
-                _uiState.value = ProductsState(error = exception.cause?.message, isLoading = false, isRefreshing = false)
+                _uiState.value = ProductsState(error = ErrorState.Fail(exception.cause?.message), isLoading = false, isRefreshing = false)
             }
         }
     }

@@ -35,6 +35,7 @@ import androidx.navigation.NavController
 import com.broma186.productshopping.R
 import com.broma186.productshopping.presentation.components.AppBar
 import com.broma186.productshopping.presentation.components.ProductItem
+import com.broma186.productshopping.presentation.model.ProductsState
 import com.broma186.productshopping.presentation.navigation.Screen
 import com.broma186.productshopping.presentation.viewmodel.ProductDetailsViewModel
 import kotlinx.coroutines.launch
@@ -61,7 +62,7 @@ fun ProductDetailsScreen(
 @Composable
 fun ProductDetailsScreenContent(
     navController: NavController,
-    uiState: ProductDetailsViewModel.ProductState,
+    uiState: ProductsState,
     onAddToCart: suspend (cartCount: Int) -> Boolean,
     onBackClick: () -> Unit
 ) {
@@ -176,12 +177,8 @@ fun ProductDetailsScreenContent(
 
                 }
 
-                !uiState.errorMessage.isNullOrEmpty() -> {
-                    ErrorScreen(errorMessage = uiState.errorMessage)
-                }
-
-                else -> {
-                    ErrorScreen(errorMessage = "Failed to load product")
+                uiState.error != null -> {
+                    ErrorScreen(error = uiState.error)
                 }
             }
         }

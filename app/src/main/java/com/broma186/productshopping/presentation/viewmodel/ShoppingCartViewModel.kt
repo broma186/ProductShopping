@@ -6,6 +6,7 @@ import com.broma186.productshopping.data.model.mapToUI
 import com.broma186.productshopping.domain.usecase.ClearCartUseCase
 import com.broma186.productshopping.domain.usecase.GetProductsLocalUseCase
 import com.broma186.productshopping.domain.usecase.UpdateCartUseCase
+import com.broma186.productshopping.presentation.model.ErrorState
 import com.broma186.productshopping.presentation.model.ProductsState
 import com.broma186.productshopping.presentation.viewmodel.ProductsViewModel.ProductsIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,10 +46,10 @@ class ShoppingCartViewModel @Inject constructor(
                 if (productList.isNotEmpty()) {
                     _uiState.value = ProductsState(products = productList, isLoading = false)
                 } else {
-                    _uiState.value = ProductsState(error = "No content to display", isLoading = false)
+                    _uiState.value = ProductsState(error = ErrorState.NoData, isLoading = false)
                 }
             } catch (exception: Exception) {
-                _uiState.value = ProductsState(error = exception.cause?.message, isLoading = false)
+                _uiState.value = ProductsState(error = ErrorState.Fail(exception.cause?.message), isLoading = false)
             }
         }
     }
@@ -64,7 +65,7 @@ class ShoppingCartViewModel @Inject constructor(
 
                 _uiState.value = _uiState.value.copy(
                     products = updatedProducts,
-                    error = if (updatedProducts.isEmpty()) "No content to display" else null
+                    error = if (updatedProducts.isEmpty()) ErrorState.NoData else null
                 )
                 return true
             }
@@ -81,5 +82,4 @@ class ShoppingCartViewModel @Inject constructor(
             }
         }
     }
-
 }

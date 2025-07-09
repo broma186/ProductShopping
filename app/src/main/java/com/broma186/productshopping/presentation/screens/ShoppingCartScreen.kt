@@ -70,7 +70,7 @@ fun ShoppingCartScreen(
                 )
             }
 
-            !uiState.error.isNullOrEmpty() -> {
+            uiState.error != null -> {
                 ErrorScreen(Modifier, uiState.error)
             }
         }
