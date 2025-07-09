@@ -23,18 +23,20 @@ import org.junit.Test
 
 class ProductsViewModelTest {
 
+    companion object {
+        val products = listOf(
+            ProductData(1, "A", 45.9, "NZD", "Description A", "fence", "Wire fencing", true,  5, 4.5, 2, "unit", 1),
+            ProductData(2, "B", 3.56, "NZD", "Description B", "electric_bolt", "Electric Fence", true,  5, 4.5, 2, "unit", 3),
+            ProductData(3, "C", 11.99, "NZD", "Description C", "view_column", "Fence Posts", true,  5, 4.5, 2, "unit", 0),
+        )
+    }
+
     private val testDispatcher = StandardTestDispatcher()
 
     @RelaxedMockK
     lateinit var mockGetProductsUseCase: GetProductsUseCase
 
     private lateinit var viewModel: ProductsViewModel
-
-    private val products = listOf(
-        ProductData(1, "A", 45.9, "NZD", "Description A", "fence", "Wire fencing", true,  5, 4.5, 2, "unit", 1),
-        ProductData(2, "B", 3.56, "NZD", "Description B", "electric_bolt", "Electric Fence", true,  5, 4.5, 2, "unit", 3),
-        ProductData(3, "C", 11.99, "NZD", "Description C", "view_column", "Fence Posts", true,  5, 4.5, 2, "unit", 0),
-    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before

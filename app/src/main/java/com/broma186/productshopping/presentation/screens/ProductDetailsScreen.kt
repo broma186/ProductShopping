@@ -54,7 +54,7 @@ fun ProductDetailsScreen(
     ProductDetailsScreenContent(
         navController,
         uiState,
-        viewModel::onAddToCart,
+        viewModel.onIntent(ProductDetailsViewModel.ProductIntent.AddToCart),
         onBackClick
     )
 }
@@ -63,7 +63,7 @@ fun ProductDetailsScreen(
 fun ProductDetailsScreenContent(
     navController: NavController,
     uiState: ProductsState,
-    onAddToCart: suspend (cartCount: Int) -> Boolean,
+    onAddToCart: (cartCount: Int) -> Boolean,
     onBackClick: () -> Unit
 ) {
     val product = uiState.product
