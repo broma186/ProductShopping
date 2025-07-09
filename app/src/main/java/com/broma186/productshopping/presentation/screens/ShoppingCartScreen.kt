@@ -89,12 +89,13 @@ fun ShoppingCartScreenContent(
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(bottom = 100.dp),
             state = state
         ) {
             itemsIndexed(products) { index, product ->
                 if (index != 0) {
-                    HorizontalDivider(color = Color.LightGray)
+                    HorizontalDivider(modifier = Modifier.padding(start = 16.dp), color = Color.LightGray)
                 }
                 CartItemRow(
                     name = product.name,
@@ -118,6 +119,7 @@ fun ShoppingCartScreenContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(100.dp)
                 .align(Alignment.BottomCenter)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
