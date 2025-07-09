@@ -50,6 +50,7 @@ class ProductDetailsViewModel @Inject constructor(
     suspend fun onAddToCart(cartCount: Int): Boolean {
           return try {
                 if (updateCartUseCase.invoke(productId, cartCount)) {
+                    _uiState.value = _uiState.value.copy(product = _uiState.value.product?.copy(cartCount = cartCount))
                     return true
                 }
               false

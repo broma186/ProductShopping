@@ -53,13 +53,13 @@ class ProductDetailViewModelTest {
             mockUpdateCartUseCase,
             mockGetCartCountUseCase
         )
-
+        coEvery { mockGetProductUseCase.invoke(productId) } returns products[0]
+        coEvery { mockGetCartCountUseCase.invoke(productId) } returns 1
     }
 
     @Test
     fun `when data is returned from the use case, the product are shown in the state, and no error is thrown`() = runTest {
-            coEvery { mockGetProductUseCase.invoke(productId) } returns products[0]
-            coEvery { mockGetCartCountUseCase.invoke(productId) } returns 1
+
 
             viewModel.onIntent(ProductDetailsViewModel.ProductIntent.FetchProduct)
             advanceUntilIdle()
@@ -84,6 +84,30 @@ class ProductDetailViewModelTest {
         viewModel.onIntent(ProductDetailsViewModel.ProductIntent.FetchProduct)
         advanceUntilIdle()
         assert(viewModel.uiState.value.error is ErrorState.Fail)
+    }
+
+    @Test
+    fun `when the cart count is updated, it returns true and updated the cart count`() = runTest {
+        coEvery { mockUpdateCartUseCase.invoke(productId, 4) } returns true
+        viewModel.onIntent(ProductDetailsViewModel.ProductIntent.FetchProduct)
+        advanceUntilIdle()
+        assert(viewModel.uiState.value.product?.cartCount == 1)
+
+        viewModel.onAddToCart(4)
+        advanceUntilIdle()
+        assert(viewModel.uiState.value.product?.cartCount == 4)
+    }
+
+    @Test
+    fun `when the cart count update fails, it returns false`() = runTest {
+        coEvery { mockUpdateCartUseCase.invoke(productId, 2) } returns false
+        viewModel.onIntent(ProductDetailsViewModel.ProductIntent.FetchProduct)
+        advanceUntilIdle()
+        assert(viewModel.uiState.value.product?.cartCount == 1)
+
+        viewModel.onAddToCart(2)
+        advanceUntilIdle()
+        assert(viewModel.uiState.value.product?.cartCount == 1)
     }
 }
 
