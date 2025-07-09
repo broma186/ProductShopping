@@ -3,7 +3,6 @@ package com.broma186.productshopping.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.broma186.productshopping.R
 import com.broma186.productshopping.data.model.mapToUI
 import com.broma186.productshopping.domain.usecase.GetCartCountUseCase
 import com.broma186.productshopping.domain.usecase.GetProductUseCase
@@ -11,10 +10,8 @@ import com.broma186.productshopping.domain.usecase.UpdateCartUseCase
 import com.broma186.productshopping.presentation.model.ErrorState
 import com.broma186.productshopping.presentation.model.ProductsState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,13 +28,9 @@ class ProductDetailsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProductsState())
     val uiState: StateFlow<ProductsState> = _uiState
 
-    private val _addCardEvent = MutableSharedFlow<ProductEvent>()
-    val addCardEvent = _addCardEvent.asSharedFlow()
-
     fun onIntent(intent: ProductIntent) {
         when (intent) {
             ProductIntent.FetchProduct -> fetchProduct()
-            is ProductIntent.AddToCart -> onAddToCart(intent.cartCount)
         }
     }
 
@@ -54,28 +47,18 @@ class ProductDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun onAddToCart(cartCount: Int) {
-        viewModelScope.launch {
-            val success = try {
-                updateCartUseCase.invoke(productId, cartCount)
-            } catch (e: Exception) {
-                false
+    suspend fun onAddToCart(cartCount: Int): Boolean {
+          return try {
+                if (updateCartUseCase.invoke(productId, cartCount)) {
+                    return true
+                }
+              false
+            } catch (exception: Exception) {
+              false
             }
-            val messageResId = if (success) {
-                R.string.update_cart_result_success
-            } else {
-                R.string.update_cart_result_failure
-            }
-            _addCardEvent.emit(ProductEvent.ShowToast(messageResId))
-        }
     }
 
     sealed class ProductIntent {
         data object FetchProduct : ProductIntent()
-        data class AddToCart(val cartCount: Int) : ProductIntent()
-    }
-
-    sealed class ProductEvent {
-        data class ShowToast(val message: Int) : ProductEvent()
     }
 }
