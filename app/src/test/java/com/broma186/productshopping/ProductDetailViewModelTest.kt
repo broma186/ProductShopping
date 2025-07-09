@@ -8,7 +8,6 @@ import com.broma186.productshopping.domain.usecase.GetProductUseCase
 import com.broma186.productshopping.domain.usecase.UpdateCartUseCase
 import com.broma186.productshopping.presentation.model.ErrorState
 import com.broma186.productshopping.presentation.viewmodel.ProductDetailsViewModel
-import com.broma186.productshopping.presentation.viewmodel.ProductsViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -19,8 +18,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -59,8 +56,6 @@ class ProductDetailViewModelTest {
 
     @Test
     fun `when data is returned from the use case, the product are shown in the state, and no error is thrown`() = runTest {
-
-
             viewModel.onIntent(ProductDetailsViewModel.ProductIntent.FetchProduct)
             advanceUntilIdle()
             assertEquals(viewModel.uiState.value.product, products[0].mapToUI())
