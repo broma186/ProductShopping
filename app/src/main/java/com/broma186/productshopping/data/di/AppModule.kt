@@ -34,8 +34,8 @@ class AppModule {
     }
 
     @Provides
-    fun provideLocalJsonInterceptor(@ApplicationContext context: Context): LocalJsonInterceptor {
-        return LocalJsonInterceptor(context)
+    fun provideLocalJsonInterceptor(@ApplicationContext context: Context, jsonHelper: JsonHelper): LocalJsonInterceptor {
+        return LocalJsonInterceptor(context, jsonHelper)
     }
 
     @Provides
