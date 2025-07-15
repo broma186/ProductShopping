@@ -15,7 +15,7 @@ class ProductShoppingApp: Application() {
     override fun onCreate() {
         super.onCreate()
         if (!jsonHelper.writeAssetJsonToInternalStorage()) {
-            Log.d("DEBUG", "Can't write data to storage, will rely on asset")
+            Log.d("DEBUG", "Can't write data to storage, will rely on local storage")
         }
     }
 }
