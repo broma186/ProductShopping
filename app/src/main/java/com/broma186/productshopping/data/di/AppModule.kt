@@ -2,6 +2,7 @@ package com.broma186.productshopping.data.di
 
 import android.content.Context
 import androidx.room.Room
+import com.broma186.productshopping.data.JsonHelper
 import com.broma186.productshopping.data.api.ProductService
 import com.broma186.productshopping.data.db.ProductDao
 import com.broma186.productshopping.data.db.ProductDatabase
@@ -67,6 +68,11 @@ class AppModule {
     @Provides
     fun provideProductShoppingDao(db: ProductDatabase): ProductDao {
         return db.productDao()
+    }
+
+    @Provides
+    fun provideJsonHelper(@ApplicationContext context: Context): JsonHelper {
+        return JsonHelper(context)
     }
 
     @Provides
