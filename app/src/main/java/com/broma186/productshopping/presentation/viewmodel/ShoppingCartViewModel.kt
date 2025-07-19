@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.broma186.productshopping.data.model.mapToUI
 import com.broma186.productshopping.domain.usecase.ClearCartUseCase
-import com.broma186.productshopping.domain.usecase.GetProductsLocalUseCase
+import com.broma186.productshopping.domain.usecase.GetProductsUseCase
 import com.broma186.productshopping.domain.usecase.UpdateCartUseCase
 import com.broma186.productshopping.presentation.model.ErrorState
 import com.broma186.productshopping.presentation.model.ProductsState
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShoppingCartViewModel @Inject constructor(
-    private val getProductsLocalUseCase: GetProductsLocalUseCase,
+    private val getProductsUseCase: GetProductsUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val clearCartUseCase: ClearCartUseCase
 ) : ViewModel() {
@@ -38,7 +38,7 @@ class ShoppingCartViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _uiState.value = ProductsState(isLoading = true)
-                val productList = getProductsLocalUseCase.invoke().filter {
+                val productList = getProductsUseCase.invoke().filter {
                     (it.cartCount ?: 0) > 0
                 }.map {
                     it.mapToUI()

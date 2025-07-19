@@ -2,7 +2,7 @@ package com.broma186.productshopping
 
 import com.broma186.productshopping.ProductsViewModelTest.Companion.products
 import com.broma186.productshopping.domain.usecase.ClearCartUseCase
-import com.broma186.productshopping.domain.usecase.GetProductsLocalUseCase
+import com.broma186.productshopping.domain.usecase.GetProductsUseCase
 import com.broma186.productshopping.domain.usecase.UpdateCartUseCase
 import com.broma186.productshopping.presentation.viewmodel.ProductsViewModel
 import com.broma186.productshopping.presentation.viewmodel.ShoppingCartViewModel
@@ -27,7 +27,7 @@ class ShoppingCartViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     @RelaxedMockK
-    lateinit var mockGetProductsLocalUseCase: GetProductsLocalUseCase
+    lateinit var mockGetProductsUseCase: GetProductsUseCase
 
     @RelaxedMockK
     lateinit var mockUpdateCartUseCase: UpdateCartUseCase
@@ -43,11 +43,11 @@ class ShoppingCartViewModelTest {
         MockKAnnotations.init(this)
         Dispatchers.setMain(testDispatcher)
         viewModel = ShoppingCartViewModel(
-            mockGetProductsLocalUseCase,
+            mockGetProductsUseCase,
             mockUpdateCartUseCase,
             mockClearCartUseCase
         )
-        coEvery { mockGetProductsLocalUseCase.invoke() } returns products
+        coEvery { mockGetProductsUseCase.invoke() } returns products
     }
 
     @Test
@@ -86,7 +86,7 @@ class ShoppingCartViewModelTest {
         viewModel.onIntent(ProductsViewModel.ProductsIntent.FetchProducts)
         advanceUntilIdle()
 
-        coEvery { mockGetProductsLocalUseCase.invoke() } returns emptyList()
+        coEvery { mockGetProductsUseCase.invoke() } returns emptyList()
         viewModel.clearCart()
         advanceUntilIdle()
 
