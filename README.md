@@ -1,11 +1,10 @@
   Product Shopping App
 
 - MVI architecture, but actions and intents aren't fully integrated to make it complelety MVI.
-  The AddToCart and update/clear cart methods weren't included in the ProductsIntent.
+  The AddToCart and update/clear cart methods aren't included in the ProductsIntent.
   - Room necessary for local persistence and offline viewing.
-  - If there was a full REST service I'd have made the data refreshable for the shopping cart.
   - Could have moved many of the strings to the strings folder.
-  - A mock service is used for getting the local json file (stored in the assets folder). I could have written the data to a file somewhere in internal storage and read/wrote with that. That would have allowed me to update/delete/insert the data there. Instead I opted for retrieval of the data on the home and detail screen.
+  - The data is initially retrieved from the assets folder in the project storage then written to internal storage. A mock service is used for retrieving and updating this file stored internally to the application. The contents of this file are read and updated in the json interceptor for the service by checking request type/url segments and parsing accordingly. After the services are called for getting the data, updating and clearing, the same changes are made to the local db storage.
   - No paging, just infinate scroll.
   - Deeplinking is implemented, you can try running;
 
