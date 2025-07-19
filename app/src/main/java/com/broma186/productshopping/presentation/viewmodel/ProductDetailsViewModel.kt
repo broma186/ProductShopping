@@ -38,7 +38,7 @@ class ProductDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true)
-                val product = getProductUseCase.invoke(id = productId).mapToUI()
+                val product = getProductUseCase.invoke(id = productId)?.mapToUI()
                 val cartCount = getCartCountUseCase.invoke(id = productId)
                 _uiState.value = _uiState.value.copy(product = product, cartCount = cartCount, isLoading = false, error = null)
             } catch (exception: Exception) {

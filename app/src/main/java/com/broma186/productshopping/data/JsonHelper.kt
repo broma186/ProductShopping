@@ -45,6 +45,7 @@ class JsonHelper(private val context: Context) {
                 fileToRead.readText()
             } else ""
         } catch (e: Exception) {
+            e.printStackTrace()
             ""
         }
     }

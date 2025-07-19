@@ -32,15 +32,23 @@ class ProductShoppingRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getProduct(id: Int): ProductData {
-        return productDao.getProduct(id).toDomainModel()
+    override suspend fun getProduct(id: Int): ProductData? {
+        return productService.getProduct(id)?.let {
+            productDao.getProduct(id)?.toDomainModel()
+        }
     }
 
     override suspend fun updateCart(productId: Int, cartCount: Int): Boolean {
-        val product = productDao.getProduct(productId)
-        val updatedProduct = product.copy(cartCount = cartCount)
-        val updatedRows = productDao.updateProduct(updatedProduct)
-        return updatedRows > 0
+        val updated = productService.updateProduct(productId, cartCount)
+        if (updated.id == productId && updated.cartCount == cartCount) { // success
+            val productDb = productDao.getProduct(productId)
+            val updatedProduct = productDb?.copy(cartCount = cartCount)
+            updatedProduct?.let {
+                val updatedRows = productDao.updateProduct(updatedProduct)
+                return updatedRows > 0
+            }
+        }
+        return false
     }
 
     override suspend fun getCartCount(productId: Int): Int {
@@ -48,6 +56,10 @@ class ProductShoppingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun clearCart(): Boolean {
+        val cleared = productService.clearProducts()
+        if (cleared.products.any { (it.cartCount ?: 0) > 0 }) {
+            return false
+        }
         return productDao.clearCart() > 0
     }
 }
