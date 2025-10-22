@@ -1,7 +1,7 @@
 [versions]
 agp = "8.13.0"
 kotlin = "2.2.20"
-coreKtx = "1.12.0"
+coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -16,8 +16,6 @@ lifecycle = "2.4.1"
 okhttp3 = "4.11.0"
 retrofit2 = "2.9.0"
 mockk = "1.13.5"
-material = "1.5.3"
-javapoet = "1.13.0"
 compose = "1.6.1"
 
 [libraries]
@@ -53,7 +51,6 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 io-mockk-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

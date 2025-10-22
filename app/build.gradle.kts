@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.broma186.productshopping"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.broma186.productshopping"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
