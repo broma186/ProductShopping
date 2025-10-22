@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
-    kotlin("kapt")
 }
 
 android {
@@ -54,12 +53,6 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("com.squareup:javapoet:1.13.0")
-    }
-}
-
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
@@ -98,7 +91,7 @@ dependencies {
 
     // Dagger - Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
 
     // Retrofit/okhttp3
@@ -111,7 +104,6 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
-    ksp(libs.javapoet)
 
     // Mockk
     implementation(libs.io.mockk.mockk)
