@@ -16,6 +16,8 @@ okhttp3 = "5.3.2"
 retrofit2 = "3.0.0"
 mockk = "1.14.6"
 compose = "1.9.4"
+firebase = "4.5.0"
+firebase-bom = "34.15.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +52,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 io-mockk-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -57,3 +60,5 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version = "2.2.20-2.0.2" }
+firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }
+

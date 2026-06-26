@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.firebase)
 }
 
 android {
@@ -112,4 +113,7 @@ dependencies {
 
     // Mockk
     implementation(libs.io.mockk.mockk)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
 }
