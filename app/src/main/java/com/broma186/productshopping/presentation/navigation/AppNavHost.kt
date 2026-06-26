@@ -10,9 +10,10 @@ import androidx.navigation.navDeepLink
 import com.broma186.productshopping.presentation.screens.ProductDetailsScreen
 import com.broma186.productshopping.presentation.screens.ProductsScreen
 import com.broma186.productshopping.presentation.screens.ShoppingCartScreen
+import com.google.firebase.ai.GenerativeModel
 
 @Composable
-fun AppNavHost(navController: NavHostController) {
+fun AppNavHost(firebaseAI: GenerativeModel, navController: NavHostController) {
     NavHost(navController, startDestination = Screen.Products.route) {
         composable(Screen.Products.route,
             deepLinks = listOf(navDeepLink {

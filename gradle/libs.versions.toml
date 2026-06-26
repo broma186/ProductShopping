@@ -53,6 +53,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 io-mockk-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-ai = { group = "com.google.firebase", name = "firebase-ai" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
