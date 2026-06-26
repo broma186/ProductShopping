@@ -27,10 +27,7 @@ fun ErrorScreen(
     modifier: Modifier = Modifier,
     error: ErrorState
 ) {
-    val errorMessage = when (error) {
-        is ErrorState.NoData -> "No content to display"
-        is ErrorState.Fail -> error.message ?: "No content to display"
-    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
